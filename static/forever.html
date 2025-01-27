@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>星空下的浪漫</title>
     <style>
         /* 原有样式保持不变 */
@@ -40,14 +41,16 @@
         }
 
         h1 {
-            font-size: 4em;
+            /* 移动端字体放大 */
+            font-size: 6em; 
             margin: 0;
             text-shadow: 0 0 10px #ff69b4;
             animation: fadeIn 2s ease-in;
         }
 
         p {
-            font-size: 1.5em;
+            /* 移动端字体放大 */
+            font-size: 2.5em; 
             margin: 20px 0;
             text-shadow: 0 0 5px #000;
             animation: fadeIn 3s ease-in;
@@ -69,7 +72,8 @@
 
         .timer span {
             display: block;
-            font-size: 1.2em;
+            /* 移动端字体放大 */
+            font-size: 1.5em; 
             line-height: 1.5;
         }
 
@@ -81,6 +85,40 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 在样式表中添加音乐控制按钮样式 */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            background: #000;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            /* 移动端字体放大 */
+            font-size: 1.2em; 
+        }
+        .music-control:hover {
+            background: #808080;
+        }
+
+        /* 新增图片闪烁动画 */
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+
+        .image-star {
+            position: absolute;
+            animation: fadeInOut 5s ease-in-out infinite;
+            pointer-events: none;
+            max-width: 100px;
+            max-height: 100px;
         }
     </style>
 </head>
@@ -148,84 +186,41 @@
         updateTimer(); // 立即执行一次
     </script>
 
-<!-- 在<body>标签内最上方添加音频元素 -->
-<audio id="bgMusic" autoplay loop muted>
-    <source src="周杰伦 - 晴天.mp3" type="audio/mpeg">
-    您的浏览器不支持音频播放
-</audio>
+    <!-- 在<body>标签内最上方添加音频元素 -->
+    <audio id="bgMusic" autoplay loop muted>
+        <source src="周杰伦 - 晴天.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放
+    </audio>
 
-<script>
-    // 在原有script标签内添加以下代码
-    // 自动播放处理（需要用户交互后播放）
- document.addEventListener('click', function() {
-    const audio = document.getElementById('bgMusic');
-    audio.muted = false; // 解除静音
-    audio.play();
-});
+    <script>
+        // 在原有script标签内添加以下代码
+        // 自动播放处理（需要用户交互后播放）
+        document.addEventListener('click', function() {
+            const audio = document.getElementById('bgMusic');
+            audio.muted = false; // 解除静音
+            audio.play();
+        });
 
-    // 在createStars函数后添加音乐控制（可选）
-    function toggleMusic() {
-        const audio = document.getElementById('bgMusic');
-        audio.muted = !audio.muted;
-    }
-// 在页面加载时尝试自动播放
-window.onload = function() {
-    const audio = document.getElementById('bgMusic');
-    audio.play().catch(() => {
-        // 如果自动播放失败，显示提示
-        console.log('需要用户交互后才能播放');
-    });
-};
-</script>
-
-<style>
-    /* 在样式表中添加音乐控制按钮样式 */
-    .music-control {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 999;
-        background: #000;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 20px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    .music-control:hover {
-        background: #808080;
-    }
-</style>
-
-<!-- 在计时器下方添加音乐控制按钮 -->
-<div class="music-control" onclick="toggleMusic()">
-    ♬ 音乐开关
-</div>
-
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <title>星空下的浪漫</title>
-    <style>
-        /* 新增图片闪烁动画 */
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0.9); }
+        // 在createStars函数后添加音乐控制（可选）
+        function toggleMusic() {
+            const audio = document.getElementById('bgMusic');
+            audio.muted = !audio.muted;
         }
+        // 在页面加载时尝试自动播放
+        window.onload = function() {
+            const audio = document.getElementById('bgMusic');
+            audio.play().catch(() => {
+                // 如果自动播放失败，显示提示
+                console.log('需要用户交互后才能播放');
+            });
+        };
+    </script>
 
-        .image-star {
-            position: absolute;
-            animation: fadeInOut 5s ease-in-out infinite;
-            pointer-events: none;
-            max-width: 100px;
-            max-height: 100px;
-        }
-    </style>
-</head>
-<body>
-    <!-- 在原有script标签内修改如下 -->
+    <!-- 在计时器下方添加音乐控制按钮 -->
+    <div class="music-control" onclick="toggleMusic()">
+        ♬ 音乐开关
+    </div>
+
     <script>
         // 图片路径数组（请替换为实际图片路径）
         const imagePaths = [
