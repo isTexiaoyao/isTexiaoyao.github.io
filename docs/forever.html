@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>星空下的浪漫</title>
+    <style>
+        /* 原有样式保持不变 */
+        body {
+            margin: 0;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 1.5s infinite;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            color: #fff;
+            text-align: center;
+            font-family: '宋体', cursive;
+        }
+
+        h1 {
+            font-size: 4em;
+            margin: 0;
+            text-shadow: 0 0 10px #ff69b4;
+            animation: fadeIn 2s ease-in;
+        }
+
+        p {
+            font-size: 1.5em;
+            margin: 20px 0;
+            text-shadow: 0 0 5px #000;
+            animation: fadeIn 3s ease-in;
+        }
+
+        /* 新增计时器样式 */
+        .timer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .timer span {
+            display: block;
+            font-size: 1.2em;
+            line-height: 1.5;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    
+    <!-- 新增计时器 -->
+    <div class="timer" id="loveTimer">
+        <span id="timeCounter"></span>
+    </div>
+
+    <div class="content">
+        <h1>陆宇萌</h1>
+        <p>你是我宇宙中最亮的星<br>
+        愿与你共度这浩瀚星河<br>
+        爱你，直到最后一颗星辰熄灭</p>
+    </div>
+
+    <script>
+        // 创建星空效果
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            const starCount = 200;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 3;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 1.5;
+                
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = left + '%';
+                star.style.top = top + '%';
+                star.style.animationDelay = delay + 's';
+                
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 恋爱计时器
+        function updateTimer() {
+            // 设置恋爱开始时间（2023年12月1日）
+            const startDate = new Date(2023, 11, 1); // 注意月份从0开始计数
+            const now = new Date();
+            const diff = now - startDate;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('timeCounter').innerHTML = 
+                `我们在一起：
+                ${days} 天 ${hours} 小时
+                ${minutes} 分 ${seconds} 秒了`;
+        }
+
+        // 初始化
+        createStars();
+        setInterval(updateTimer, 1000); // 每秒更新
+        updateTimer(); // 立即执行一次
+    </script>
+
+<!-- 在<body>标签内最上方添加音频元素 -->
+<audio id="bgMusic" autoplay loop muted>
+    <source src="周杰伦 - 晴天.mp3" type="audio/mpeg">
+    您的浏览器不支持音频播放
+</audio>
+
+<script>
+    // 在原有script标签内添加以下代码
+    // 自动播放处理（需要用户交互后播放）
+ document.addEventListener('click', function() {
+    const audio = document.getElementById('bgMusic');
+    audio.muted = false; // 解除静音
+    audio.play();
+});
+
+    // 在createStars函数后添加音乐控制（可选）
+    function toggleMusic() {
+        const audio = document.getElementById('bgMusic');
+        audio.muted = !audio.muted;
+    }
+// 在页面加载时尝试自动播放
+window.onload = function() {
+    const audio = document.getElementById('bgMusic');
+    audio.play().catch(() => {
+        // 如果自动播放失败，显示提示
+        console.log('需要用户交互后才能播放');
+    });
+};
+</script>
+
+<style>
+    /* 在样式表中添加音乐控制按钮样式 */
+    .music-control {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 999;
+        background: #000;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .music-control:hover {
+        background: #808080;
+    }
+</style>
+
+<!-- 在计时器下方添加音乐控制按钮 -->
+<div class="music-control" onclick="toggleMusic()">
+    ♬ 音乐开关
+</div>
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>星空下的浪漫</title>
+    <style>
+        /* 新增图片闪烁动画 */
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+
+        .image-star {
+            position: absolute;
+            animation: fadeInOut 5s ease-in-out infinite;
+            pointer-events: none;
+            max-width: 100px;
+            max-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 在原有script标签内修改如下 -->
+    <script>
+        // 图片路径数组（请替换为实际图片路径）
+        const imagePaths = [
+            'images/heart.png',
+            'images/star.png',
+            'images/sparkle.png'
+        ];
+
+        // 创建图片闪烁效果
+        function createImageStars() {
+            const starsContainer = document.querySelector('.stars');
+            
+            const img = document.createElement('img');
+            img.className = 'image-star';
+            
+            // 随机选择图片
+            const randomImg = imagePaths[Math.floor(Math.random() * imagePaths.length)];
+            img.src = randomImg;
+
+            // 随机位置
+            img.style.left = Math.random() * 100 + '%';
+            img.style.top = Math.random() * 100 + '%';
+
+            // 随机大小（50px到150px之间）
+            const size = 250 + Math.random() * 300;
+            img.style.width = size + 'px';
+            img.style.height = 'auto';
+
+            starsContainer.appendChild(img);
+
+            // 5秒后移除元素（动画结束后）
+            setTimeout(() => img.remove(), 5000);
+        }
+
+        // 初始化时添加
+        createImageStars();
+        // 每2秒添加一个新图片
+        setInterval(createImageStars, 2000);
+    </script>
+</body>
+</html>
