@@ -232,6 +232,18 @@
                 right: 10px;
             }
         }
+        .update-time {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            color: #888;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            z-index: 999;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 8px;
+            border-radius: 3px;
+            backdrop-filter: blur(2px);
     </style>
 </head>
 <body>
@@ -390,11 +402,12 @@
     <div class="timer" id="loveTimer">
         <span id="timeCounter"></span>
     </div>
-
+    <div class="update-time">更新时间：2025年4月20日</div>
     <div class="content">
         <h1>陆宇萌</h1>
-        <p>我们在这星空下叙爱<br>
-        We're talking about love under the stars.<br>
+        <p>银河倾泻着不灭的辉光<br>
+我们却成了逆向的流星<br>
+在永恒的幕布上刻下瞬息交会的灼痕<br>
         </p>
     </div>
 
@@ -416,13 +429,24 @@
     <script>
         // 计时器功能
         function updateTimer() {
-            const startDate = new Date(2023, 11, 1);
-            const diff = Date.now() - startDate;
+            // 设置起始时间为 2025年3月29日 12:25:00
+            const startDate = new Date(2025, 02, 29, 12, 25, 0);
+            const now = new Date();
+            const diff = now - startDate; // 计算时间差（毫秒）
+
+            // 时间单位计算
+            const days = Math.floor(diff / 864e5); // 天
+            const hours = Math.floor((diff % 864e5) / 3600e3); // 小时
+            const minutes = Math.floor((diff % 3600e3) / 60e3); // 分钟
+            const seconds = Math.floor((diff % 60e3) / 1000); // 秒
+
+            // 更新显示内容（修复时间格式化问题）
             document.getElementById('timeCounter').innerHTML = 
-            `我们在一起：${Math.floor(diff/864e5)}天 ${new Date(diff).toISOString().substr(11, 8).replace(/:/g, '时', '分')}秒了`;
+                `我们分手：${days}天 ${hours}时${minutes}分${seconds}秒了`;
         }
         setInterval(updateTimer, 1000);
-        updateTimer();
+        updateTimer(); // 初始化立即执行
+
 
         // 星空创建
         function createStars() {
