@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>永远爱陆宇萌</title>
+    <style>
+        /* 原有样式保持不变 */
+        .image-star {
+            position: absolute;
+            animation: fadeInOut 5s ease-in-out infinite;
+            pointer-events: none;
+            max-width: 160px;
+            aspect-ratio: 9/16;
+            object-fit: cover;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+
+        @media (max-width: 768px) {
+            .image-star {
+                max-width: 60px;
+                max-height: 60px;
+            }
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 1.5s infinite;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            color: #fff;
+            text-align: center;
+            font-family: '宋体', cursive;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin: 0 15px;
+            text-shadow: 0 0 10px #ff69b4;
+            animation: fadeIn 2s ease-in;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin: 15px 0;
+            padding: 0 15px;
+        }
+
+        .timer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            width: 80%;
+            max-width: 300px;
+            box-sizing: border-box;
+        }
+
+        /* 修改后的爱情痕迹按钮 */
+        .memory-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #000;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            z-index: 1001;
+            font-family: '宋体';
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transform: scale(0.5);
+            transform-origin: top right;
+            font-size: 14px;
+        }
+
+        .memory-btn:hover {
+            background: #555;
+            transform: scale(0.55) translateY(-2px);
+        }
+
+        /* 音乐播放器样式 */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 25px;
+            color: white;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .music-player.expanded {
+            width: 300px;
+            height: auto;
+            padding: 15px;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .music-player.expanded .player-controls {
+            opacity: 1;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.3);
+            margin: 10px 0;
+            cursor: pointer;
+            display: none;
+        }
+
+        .music-player.expanded .progress-container {
+            display: block;
+        }
+
+        .song-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .music-player.expanded .song-list {
+            display: block;
+        }
+
+        .song-item {
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .song-item:hover {
+            background: rgba(255,105,180,0.3);
+        }
+
+        .current-song {
+            font-weight: bold;
+            color: #ff69b4;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            width: 26px;
+            height: 26px;
+            background: #ff69b4;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-btn {
+            background: #ff69b4;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .music-player {
+                bottom: 10px;
+                right: 10px;
+            }
+            .music-player.expanded {
+                width: 90%;
+                right: 10px;
+            }
+        }
+        .update-time {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            color: #888;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            z-index: 999;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 8px;
+            border-radius: 3px;
+            backdrop-filter: blur(2px);
+    </style>
+</head>
+<body>
+    <!-- 新增爱情痕迹按钮 -->
+    <div class="memory-btn" onclick="window.open('https://istexiaoyao.github.io', '_blank')">✿ 爱情痕迹</div>
+
+    <!-- 原有内容 -->
+    <script>
+        // 图片闪烁功能
+        const imagePaths = [
+'images/1.png',
+'images/2.png',
+'images/3.png',
+'images/4.png',
+'images/5.png',
+'images/6.png',
+'images/7.png',
+'images/8.png',
+'images/9.png',
+'images/10.png',
+'images/11.png',
+'images/12.png',
+'images/13.png',
+'images/14.png',
+'images/15.png',
+'images/16.png',
+'images/17.png',
+'images/18.png',
+'images/19.png',
+'images/20.png',
+'images/21.png',
+'images/22.png',
+'images/23.png',
+'images/24.png',
+'images/25.png',
+'images/26.png',
+'images/27.png',
+'images/28.png',
+'images/29.png',
+'images/30.png',
+'images/31.png',
+'images/32.png',
+'images/33.png',
+'images/34.png',
+'images/35.png',
+'images/36.png',
+'images/37.png',
+'images/38.png',
+'images/39.png',
+'images/40.png',
+'images/41.png',
+'images/42.png',
+'images/43.png',
+'images/44.png',
+'images/45.png',
+'images/46.png',
+'images/47.png',
+'images/48.png',
+'images/49.png',
+'images/50.png',
+'images/51.png',
+'images/52.png',
+'images/53.png',
+'images/54.png',
+'images/55.png',
+'images/56.png',
+'images/57.png',
+'images/58.png',
+'images/59.png',
+'images/60.png',
+'images/61.png',
+'images/62.png',
+'images/63.png',
+'images/64.png',
+'images/65.png',
+'images/66.png',
+'images/67.png',
+'images/68.png',
+'images/69.png',
+'images/70.png',
+'images/71.png',
+'images/72.png',
+'images/73.png',
+'images/74.png',
+'images/75.png',
+'images/76.png',
+'images/77.png',
+'images/78.png',
+'images/79.png',
+'images/80.png',
+'images/81.png',
+'images/82.png',
+'images/83.png',
+'images/84.png',
+'images/85.png',
+'images/86.png',
+'images/87.png',
+'images/88.png',
+'images/89.png',
+'images/90.png',
+'images/91.png',
+'images/92.png',
+'images/93.png',
+'images/94.png',
+'images/95.png',
+'images/96.png',
+'images/97.png',
+'images/98.png',
+'images/99.png',
+'images/100.png',
+'images/101.png',
+'images/102.png',
+'images/103.png',
+'images/104.png',
+'images/105.png',
+'images/106.png',
+'images/107.png',
+'images/108.png',
+'images/109.png',
+'images/110.png',
+'images/111.png',
+'images/112.png',
+'images/113.png',
+'images/114.png',
+'images/115.png',
+'images/116.png',
+'images/117.png',
+'images/118.png',
+'images/119.png',
+'images/120.png'
+        ];
+        function createImageStars() {
+            const starsContainer = document.querySelector('.stars');
+            const img = document.createElement('img');
+            
+            img.className = 'image-star';
+            img.src = imagePaths[Math.floor(Math.random() * imagePaths.length)];
+            
+            const baseWidth = 100 + Math.random() * 100;
+            img.style.width = baseWidth + 'px';
+            img.style.height = (baseWidth * 16/9) + 'px';
+            
+            img.style.left = Math.random() * 95 + '%';
+            img.style.top = Math.random() * 95 + '%';
+            
+            starsContainer.appendChild(img);
+            
+            setTimeout(() => img.remove(), 5000);
+        }
+        setInterval(createImageStars, 2000);
+        createImageStars();
+    </script>
+
+    <div class="stars"></div>
+    
+    <div class="timer" id="loveTimer">
+        <span id="timeCounter"></span>
+    </div>
+    <div class="update-time">更新时间：2025年4月20日</div>
+    <div class="content">
+        <h1>陆宇萌</h1>
+        <p>银河倾泻着不灭的辉光<br>
+我们却成了逆向的流星<br>
+在永恒的幕布上刻下瞬息交会的灼痕<br>
+        </p>
+    </div>
+
+    <!-- 音乐播放器 -->
+    <div class="music-player" id="musicPlayer">
+        <div class="toggle-btn" onclick="togglePlayer()">♬</div>
+        <div class="current-song" id="currentSong">晴天 - 周杰伦</div>
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="player-controls">
+            <button class="player-btn" onclick="prevSong(event)">◀</button>
+            <button class="player-btn" onclick="toggleMusic(event)" id="playBtn">▶</button>
+            <button class="player-btn" onclick="nextSong(event)">▶▶</button>
+        </div>
+        <ul class="song-list" id="songList"></ul>
+    </div>
+
+    <script>
+        // 计时器功能
+        function updateTimer() {
+            // 设置起始时间为 2025年3月29日 12:25:00
+            const startDate = new Date(2025, 02, 29, 12, 25, 0);
+            const now = new Date();
+            const diff = now - startDate; // 计算时间差（毫秒）
+
+            // 时间单位计算
+            const days = Math.floor(diff / 864e5); // 天
+            const hours = Math.floor((diff % 864e5) / 3600e3); // 小时
+            const minutes = Math.floor((diff % 3600e3) / 60e3); // 分钟
+            const seconds = Math.floor((diff % 60e3) / 1000); // 秒
+
+            // 更新显示内容（修复时间格式化问题）
+            document.getElementById('timeCounter').innerHTML = 
+                `我们分手：${days}天 ${hours}时${minutes}分${seconds}秒了`;
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer(); // 初始化立即执行
+
+
+        // 星空创建
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.cssText = `
+                    width: ${Math.random() * 3}px;
+                    height: ${Math.random() * 3}px;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation-delay: ${Math.random() * 1.5}s;
+                `;
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
+
+        // 音乐播放器功能
+        const songs = [
+            { title: "星空叙爱曲", artist: "法老", src: "星空叙爱曲-法老.mp3" },
+            { title: "晴天", artist: "周杰伦", src: "周杰伦 - 晴天.mp3" },
+            { title: "大城小爱", artist: "王力宏", src: "music/王力宏 - 大城小爱.mp3" },
+            { title: "有何不可", artist: "许嵩", src: "music/许嵩 - 有何不可.mp3" },
+            { title: "可不可以", artist: "张子豪", src: "music/张紫豪 - 可不可以.mp3" },
+            { title: "我们的歌", artist: "王力宏", src: "music/王力宏 - 我们的歌.mp3" },
+            { title: "真的爱你", artist: "Beyond", src: "music/Beyond - 真的爱你.mp3" }
+        ];
+
+        let currentSongIndex = 0;
+        const audio = new Audio();
+        let playerTimeout;
+
+        function initPlayer() {
+            const songList = document.getElementById('songList');
+            songs.forEach((song, index) => {
+                const li = document.createElement('li');
+                li.className = 'song-item';
+                li.textContent = `${song.title} - ${song.artist}`;
+                li.onclick = (e) => {
+                    e.stopPropagation();
+                    playSong(index);
+                    resetPlayerTimer();
+                };
+                songList.appendChild(li);
+            });
+
+            loadSong(currentSongIndex);
+
+            document.getElementById('progressContainer').addEventListener('click', (e) => {
+                const rect = e.target.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                audio.currentTime = percent * audio.duration;
+                resetPlayerTimer();
+            });
+
+            audio.addEventListener('timeupdate', updateProgress);
+            audio.addEventListener('ended', nextSong);
+        }
+
+        function togglePlayer() {
+            const player = document.getElementById('musicPlayer');
+            player.classList.toggle('expanded');
+            resetPlayerTimer();
+        }
+
+        function resetPlayerTimer() {
+            clearTimeout(playerTimeout);
+            playerTimeout = setTimeout(() => {
+                document.getElementById('musicPlayer').classList.remove('expanded');
+            }, 5000);
+        }
+
+        function loadSong(index) {
+            currentSongIndex = index;
+            audio.src = songs[index].src;
+            document.getElementById('currentSong').textContent = 
+                `${songs[index].title} - ${songs[index].artist}`;
+            document.querySelectorAll('.song-item').forEach((item, i) => {
+                item.style.background = i === index ? 'rgba(255,105,180,0.3)' : '';
+            });
+        }
+
+        function toggleMusic(e) {
+            e.stopPropagation();
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('playBtn').textContent = '‖';
+            } else {
+                audio.pause();
+                document.getElementById('playBtn').textContent = '▶';
+            }
+            resetPlayerTimer();
+        }
+
+        function prevSong(e) {
+            e.stopPropagation();
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            loadSong(currentSongIndex);
+            audio.play();
+            document.getElementById('playBtn').textContent = '‖';
+            resetPlayerTimer();
+        }
+
+        function nextSong(e) {
+            if(e) e.stopPropagation();
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            loadSong(currentSongIndex);
+            audio.play();
+            document.getElementById('playBtn').textContent = '‖';
+            resetPlayerTimer();
+        }
+
+        function playSong(index) {
+            currentSongIndex = index;
+            loadSong(index);
+            audio.play();
+            document.getElementById('playBtn').textContent = '‖';
+        }
+
+        function updateProgress() {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        // 初始化
+        initPlayer();
+        document.getElementById('musicPlayer').addEventListener('mouseleave', resetPlayerTimer);
+    </script>
+</body>
+</html>
